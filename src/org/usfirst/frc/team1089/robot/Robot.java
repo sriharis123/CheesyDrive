@@ -13,30 +13,30 @@ import edu.wpi.first.wpilibj.Joystick;
  * directory.
  */
 public class Robot extends IterativeRobot {
-    private CANTalon rightFront, rightBack, leftFront, leftBack;
-    private Joystick turn, throttle;
-    private final double DEADZONE = 0.25, TURN_SHARPNESS = 0.5;
-    
-    //TURN_SHARPNESS manipulates the voltage going to the motors, a number nearing 0 would increase
-    	//sharpness while a number nearing 1 would decrease sharpness.
-    
-    //private double rightIncreaseFactor, leftIncreaseFactor;
-    
-    public void robotInit() {
-    	rightFront = new CANTalon(1);
-    	leftFront = new CANTalon(3);
-    	rightBack = new CANTalon(2);
-    	leftBack = new CANTalon(4);
-    	
-    	rightBack.changeControlMode(CANTalon.TalonControlMode.Follower);
-    	leftBack.changeControlMode(CANTalon.TalonControlMode.Follower);
-    	
-    	leftBack.set(leftFront.getDeviceID());
+	private CANTalon rightFront, rightBack, leftFront, leftBack;
+	private Joystick turn, throttle;
+	private final double DEADZONE = 0.25, TURN_SHARPNESS = 0.5;
+	
+	//TURN_SHARPNESS manipulates the voltage going to the motors, a number nearing 0 would increase
+		//sharpness while a number nearing 1 would decrease sharpness.
+	
+	//private double rightIncreaseFactor, leftIncreaseFactor;
+	
+	public void robotInit() {
+		rightFront = new CANTalon(1);
+		leftFront = new CANTalon(3);
+		rightBack = new CANTalon(2);
+		leftBack = new CANTalon(4);
+		
+		rightBack.changeControlMode(CANTalon.TalonControlMode.Follower);
+		leftBack.changeControlMode(CANTalon.TalonControlMode.Follower);
+		
+		leftBack.set(leftFront.getDeviceID());
 		rightBack.set(rightFront.getDeviceID());
 		
 		turn = new Joystick(0);
 		throttle = new Joystick(1);
-    }
+	}
 
     /**
      * This function is called periodically during autonomous
