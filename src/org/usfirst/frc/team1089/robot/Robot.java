@@ -72,12 +72,12 @@ public class Robot extends IterativeRobot {
     
     public void teleopPeriodic() {
     	double rightDecreaseFactor = 1.0;
-		double leftDecreaseFactor = 1.0;
+    	double leftDecreaseFactor = 1.0;
 		
 
 		if (getThrottle() == 0 && getTurn() != 0) { // If we are only turning
 			leftFront.set(getTurn());			
-	    	rightFront.set(getTurn());
+			rightFront.set(getTurn());
 			
 		} else if (getThrottle() != 0 && getTurn() != 0) { // If we are doing both turning and moving forward and backwards
 			if(getTurn() < 0)
@@ -86,8 +86,8 @@ public class Robot extends IterativeRobot {
 				rightDecreaseFactor = 1 + getTurn() * -TURN_SHARPNESS; 		/* TURN_SHARPNESS * Math.abs(Math.abs(getThrottle()) - 1) 
 																				-- increases turn sharpness as throttle decreases */
 			leftFront.set(getThrottle() * leftDecreaseFactor);				//Initially was getTurn() but had to be getThrottle()
-	    	rightFront.set(getThrottle() * rightDecreaseFactor);				//to properly turn on an axis.
-	    	
+			rightFront.set(getThrottle() * rightDecreaseFactor);				//to properly turn on an axis.
+	
 		} else { // By default, only try moving forward and backwards
 			leftFront.set(-getThrottle());
 			rightFront.set(getThrottle());
