@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Robot extends IterativeRobot {
 	private CANTalon rightFront, rightBack, leftFront, leftBack;
 	private Joystick turn, throttle;
-	private final double DEADZONE = 0.25, TURN_SHARPNESS = 0.5;
+	private final double DEADZONE = 0.25, TURN_SHARPNESS = 0.5, SHARPNESS_INCREASE_MAX = 0.9;
 	
 	//TURN_SHARPNESS manipulates the voltage going to the motors, a number nearing 0 would increase
 		//sharpness while a number nearing 1 would decrease sharpness.
@@ -81,10 +81,12 @@ public class Robot extends IterativeRobot {
 			
 		} else if (getThrottle() != 0 && getTurn() != 0) { // If we are doing both turning and moving forward and backwards
 			if(getTurn() < 0)
-				leftDecreaseFactor = 1 + getTurn() * TURN_SHARPNESS;		//Initially this used only getThrottle(), but
-			if(getTurn() > 0)													//had to be getTurn() for turning.
-				rightDecreaseFactor = 1 + getTurn() * -TURN_SHARPNESS; 		/* TURN_SHARPNESS * (getThrottle() < 0.5 ? Math.abs(getThrottle()) + 0.5 : 1.0) 
-																				-- increases turn sharpness as throttle decreases below 0.5 */
+				leftDecreaseFactor = 
+					1 + getTurn() * (TURN_SHARPNESS * getThrottle() < SHARPNESS_INCREASE_MAX ? Math.pow(Math.abs(getThrottle() / 10), 2) : 1.0);		//Initially this used only getThrottle(), but
+			if(getTurn() > 0)																											//had to be getTurn() for turning.
+				rightDecreaseFactor = 
+					1 + getTurn() * -(TURN_SHARPNESS * getThrottle() < SHARPNESS_INCREASE_MAX ? Math.pow(Math.abs(getThrottle() / 10), 2) : 1.0);
+			
 			leftFront.set(getThrottle() * leftDecreaseFactor);				//Initially was getTurn() but had to be getThrottle()
 			rightFront.set(getThrottle() * rightDecreaseFactor);				//to properly turn on an axis.
 	
@@ -93,27 +95,48 @@ public class Robot extends IterativeRobot {
 			rightFront.set(getThrottle());
 		}
 		
-//		if(!leftXIsInDeadzone()){
-//			if(!rightYIsInDeadzone()) {									//left is right
-//				if(throttle.getX() < 0)
-//					leftDecreaseFactor = 1 + throttle.getX() / 2.0;
-//				if(throttle.getX() > 0)
-//					rightDecreaseFactor = 1 + throttle.getX() / -2.0;
-//			}
-//		} else {
-//			leftFront.set(-throttle.getY());
-//			rightFront.set(throttle.getY());
-//		}
-//		
-//		if (!rightYIsInDeadzone()) {
-//			// Throttle
-//	        leftFront.set(-turn.getY() * leftDecreaseFactor);			
-//	    	rightFront.set(turn.getY() * rightDecreaseFactor);
-//		} else {
-//			// Throttle
-//	        leftFront.set(0);			
-//	    	rightFront.set(0);
-//		}
+		/*
+		 * Formulas:
+		 * 
+		 * 1 + getTurn() * (TURN_SHARPNESS ...
+		 * The factor by which voltage going to one of the motors is decreasing is determined by
+		 * multiplying throttle value with a number less than itself. The turn joystick would
+		 * give this factor, but this has to be less than itself (so that if both the right and
+		 * left sticks had a value of 1.0, the robot would not just go straight). To account for
+		 * this, the turn value is multiplied by the TURN_SHARPNESS (0.01 < x < 0.99), currently
+		 * at 0.5. 1 is added to this negative value to both make it positive and keep the 
+		 * decrease factor on the greater side of 0.5, so that the voltage going to the motors 
+		 * would not rapidly decrease.
+		 * 
+		 * ... (TURN_SHARPNESS * getThrottle() < 0.9 ? Math.pow(Math.abs(getThrottle() / 10), 2) : 1.0)
+		 * As the throttle value nears 0, the TURN_SHARPNESS should increase. Throttle is
+		 * divided by 10 and squared. This is a factor by which TURN_SHARPNESS is decreased,
+		 * increasing the sharpness of the turn if the Throttle value is less than the
+		 * SHARPNESS_INCREASE_MAX (as TURN_SHARPNESS decreases, the sharpness of the turn increases).
+		 */
+		
+		
+/*		if(!leftXIsInDeadzone()){
+			if(!rightYIsInDeadzone()) {									//left is right
+				if(throttle.getX() < 0)
+					leftDecreaseFactor = 1 + throttle.getX() / 2.0;
+				if(throttle.getX() > 0)
+					rightDecreaseFactor = 1 + throttle.getX() / -2.0;
+			}
+		} else {
+			leftFront.set(-throttle.getY());
+			rightFront.set(throttle.getY());
+		}
+		
+		if (!rightYIsInDeadzone()) {
+			// Throttle
+	        leftFront.set(-turn.getY() * leftDecreaseFactor);			
+	    	rightFront.set(turn.getY() * rightDecreaseFactor);
+		} else {
+			// Throttle
+	        leftFront.set(0);			
+	    	rightFront.set(0);
+		}*/
     }
     /**
      * This function is called periodically during test mode
