@@ -81,12 +81,12 @@ public class Robot extends IterativeRobot {
 			
 		} else if (getThrottle() != 0 && getTurn() != 0) { // If we are doing both turning and moving forward and backwards
 			if(getTurn() < 0)
-				leftDecreaseFactor = 1 + getTurn() * TURN_SHARPNESS;
-			if(getTurn() > 0)
+				leftDecreaseFactor = 1 + getTurn() * TURN_SHARPNESS;		//Initially this used only getThrottle(), but
+			if(getTurn() > 0)													//had to be getTurn() for turning.
 				rightDecreaseFactor = 1 + getTurn() * -TURN_SHARPNESS;
 			
-			leftFront.set(getThrottle() * leftDecreaseFactor);			
-	    	rightFront.set(getThrottle() * rightDecreaseFactor);
+			leftFront.set(getThrottle() * leftDecreaseFactor);				//Initially was getTurn() but had to be getThrottle()
+	    	rightFront.set(getThrottle() * rightDecreaseFactor);				//to properly turn on an axis.
 	    	
 		} else { // By default, only try moving forward and backwards
 			leftFront.set(-getThrottle());
