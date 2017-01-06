@@ -83,7 +83,7 @@ public class Robot extends IterativeRobot {
 			if(getTurn() < 0)
 				leftDecreaseFactor = 1 + getTurn() * TURN_SHARPNESS;		//Initially this used only getThrottle(), but
 			if(getTurn() > 0)													//had to be getTurn() for turning.
-				rightDecreaseFactor = 1 + getTurn() * -TURN_SHARPNESS; 		/* TURN_SHARPNESS * (getThrottle() < 0.5 ? Math.abs(getThrottle()) - 0.5 : 1.0) 
+				rightDecreaseFactor = 1 + getTurn() * -TURN_SHARPNESS; 		/* TURN_SHARPNESS * (getThrottle() < 0.5 ? Math.abs(getThrottle()) + 0.5 : 1.0) 
 																				-- increases turn sharpness as throttle decreases below 0.5 */
 			leftFront.set(getThrottle() * leftDecreaseFactor);				//Initially was getTurn() but had to be getThrottle()
 			rightFront.set(getThrottle() * rightDecreaseFactor);				//to properly turn on an axis.
