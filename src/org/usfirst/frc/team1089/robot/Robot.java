@@ -95,27 +95,6 @@ public class Robot extends IterativeRobot {
 			rightFront.set(getThrottle());
 		}
 		
-		/*
-		 * Formulas:
-		 * 
-		 * 1 + getTurn() * (TURN_SHARPNESS ...
-		 * The factor by which voltage going to one of the motors is decreasing is determined by
-		 * multiplying throttle value with a number less than itself. The turn joystick would
-		 * give this factor, but this has to be less than itself (so that if both the right and
-		 * left sticks had a value of 1.0, the robot would not just go straight). To account for
-		 * this, the turn value is multiplied by the TURN_SHARPNESS (0.01 < x < 0.99), currently
-		 * at 0.5. 1 is added to this negative value to both make it positive and keep the 
-		 * decrease factor on the greater side of 0.5, so that the voltage going to the motors 
-		 * would not rapidly decrease.
-		 * 
-		 * ... (TURN_SHARPNESS * getThrottle() < 0.9 ? Math.pow(Math.abs(getThrottle() / 10), 2) : 1.0)
-		 * As the throttle value nears 0, the TURN_SHARPNESS should increase. Throttle is
-		 * divided by 10 and squared. This is a factor by which TURN_SHARPNESS is decreased,
-		 * increasing the sharpness of the turn if the Throttle value is less than the
-		 * SHARPNESS_INCREASE_MAX (as TURN_SHARPNESS decreases, the sharpness of the turn increases).
-		 */
-		
-		
 /*		if(!leftXIsInDeadzone()){
 			if(!rightYIsInDeadzone()) {									//left is right
 				if(throttle.getX() < 0)
